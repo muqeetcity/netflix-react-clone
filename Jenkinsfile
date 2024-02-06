@@ -14,14 +14,14 @@ pipeline {
             steps {
                 script {
                     // build image
-                    docker.build("081595744103.dkr.ecr.us-east-2.amazonaws.com/jan-netlix-clone:latest")
+                    docker.build("905418448047.dkr.ecr.us-east-1.amazonaws.com/netflix-jan:latest")
                 }
             }
         }
 
         stage('Trivy Scan (Aqua)') {
             steps {
-                sh 'trivy image --format template --output trivy_report.html 081595744103.dkr.ecr.us-east-2.amazonaws.com/jan-netlix-clone:latest'
+                sh 'trivy image --format template --output trivy_report.html 905418448047.dkr.ecr.us-east-1.amazonaws.com/netflix-jan:latest'
             }
         }
 
@@ -29,9 +29,9 @@ pipeline {
             steps {
                 script {
                     // push image to ECR
-                    docker.withRegistry('https://081595744103.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:dyan-ecr') {
+                    docker.withRegistry('https://905418448047.dkr.ecr.us-east-1.amazonaws.com/netflix-jan', 'ecr:us-east-1:dyan-ecr') {
                         // tag and push image
-                        docker.image("081595744103.dkr.ecr.us-east-2.amazonaws.com/jan-netlix-clone:latest").push()
+                        docker.image("905418448047.dkr.ecr.us-east-1.amazonaws.com/netflix-jan:latest").push()
                     }
                 }
             }
