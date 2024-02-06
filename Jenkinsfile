@@ -3,39 +3,38 @@ pipeline {
     options {
         timeout(time: 20, unit: 'MINUTES')
     }
-    stages{
-        // NPM dependencies
+    stages {
         stage('pull npm dependencies') {
             steps {
                 sh 'npm install'
             }
         }
-       stage('build Docker Image') {
+
+        stage('build Docker Image') {
             steps {
                 script {
                     // build image
-                    docker.build("335871625378.dkr.ecr.us-east-2.amazonaws.com/netflix-jan:latest")
-               }
+                    docker.build("081595744103.dkr.ecr.us-east-2.amazonaws.com/jan-netlix-clone:latest")
+                }
             }
         }
+
         stage('Trivy Scan (Aqua)') {
             steps {
-                sh 'trivy image --format template --output trivy_report.html 335871625378.dkr.ecr.us-east-2.amazonaws.com/netflix-jan:latest'
+                sh 'trivy image --format template --output trivy_report.html 081595744103.dkr.ecr.us-east-2.amazonaws.com/jan-netlix-clone:latest'
             }
-       }
+        }
+
         stage('Push to ECR') {
             steps {
-                script{
-                    //https://<AwsAccountNumber>.dkr.ecr.<region>.amazonaws.com/netflix-app', 'ecr:<region>:<credentialsId>
-                    docker.withRegistry('https://335871625378.dkr.ecr.us-east-2.amazonaws.com/netflix-jan', 'ecr:us-east-2:dyan-ecr') {
-                    // build image
-                    def myImage = docker.build("335871625378.dkr.ecr.us-east-2.amazonaws.com/netflix-jan:latest")
-                    // push image
-                    myImage.push()
+                script {
+                    // push image to ECR
+                    docker.withRegistry('https://081595744103.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:dyan-ecr') {
+                        // tag and push image
+                        docker.image("081595744103.dkr.ecr.us-east-2.amazonaws.com/jan-netlix-clone:latest").push()
                     }
                 }
             }
         }
-        
     }
 }
