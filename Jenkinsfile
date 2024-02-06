@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     // push image to ECR
-                    docker.withRegistry('https://081595744103.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:muqeert-ecr-jenkin') {
+                    docker.withRegistry('https://081595744103.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:muqeettasawar-ecr') {
                         // push image
                         docker.image("jan-netlix-clone:latest").push()
                     }
